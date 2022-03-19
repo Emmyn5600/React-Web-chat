@@ -5,7 +5,6 @@ import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Fab from '@material-ui/core/Fab';
 import SendIcon from '@material-ui/icons/Send';
 
@@ -32,7 +31,7 @@ const ChatSpace = () => {
   const [message, setMessage] = useState("")
   const sender1 = []
   const sender2 = []
-
+  const allSenders= []
   const handleMessageChange = (e) => {
     e.preventDefault();
     setMessage(e.target.value)
@@ -42,14 +41,14 @@ const ChatSpace = () => {
     let messageobj = {}
     if (!JSON.parse(localStorage.getItem('datas'))) {
       const arr = [];
-      messageobj.sender = sessionStorage.getItem('sender')
+      messageobj.sender = localStorage.getItem('sender')
       messageobj.message = message
       arr.push(messageobj)
       localStorage.setItem("datas", JSON.stringify(arr));
       setMessage('')
     }
     else {
-      messageobj.sender = sessionStorage.getItem('sender')
+      messageobj.sender = localStorage.getItem('sender')
       messageobj.message = message
       const arr = JSON.parse(localStorage.getItem('datas'));
       arr.push(messageobj)
@@ -59,35 +58,39 @@ const ChatSpace = () => {
 
   }
 if(JSON.parse(localStorage.getItem('datas'))!=null){
-  JSON.parse(localStorage.getItem('datas')).map((person) => {
+  JSON.parse(localStorage.getItem('datas')).map((person) => { 
+if(JSON.parse(localStorage.getItem('datas'))!=null){
+  allSenders.push(person)
+  if(JSON.parse(localStorage.getItem('users'))!=null){
+  if (person.sender == JSON.parse(localStorage.getItem('users'))[0]) {
+    sender1.push(person)
+  }
+  else if (person.sender == JSON.parse(localStorage.getItem('users'))[1]) {
+    sender2.push(person)
+  }}
+}
+})
 
-    if (person.sender == JSON.parse(localStorage.getItem('users'))[0]) {
-      sender1.push(person)
-    }
-    else if (person.sender == JSON.parse(localStorage.getItem('users'))[1]) {
-      sender2.push(person)
-    }
-  })}
-console.log(sender2, sender1)
+}
   const classes = useStyles();
   return (
     <Grid item xs={9}>
       <List className={classes.messageArea}>
         <ListItem key="2">
           <Grid container>
-            <Grid item xs={12}>
-              <h1></h1>
-              {sender1.map((person, index) => (
-                <ListItemText align="right" primary={person.message}></ListItemText>
+            <div style={{width:'100%', backgroundColor:'red'}}>
+      {allSenders.map((person, index) => (
+        <div style={{width:'100%'}}>
+          {person.sender == JSON.parse(localStorage.getItem('users'))[0] ?
+           <div align="right" style={{width:'80%',margin:"40 auto", padding:'60px', backgroundColor:'yellow'}}> <span>{person.message}</span></div> :
+            <div align="left" style={{width:'80%',margin:"40 auto", padding:'60px', backgroundColor:'green'}}> <span>{person.message}</span></div>}
+        </div>
+      )
+      )
+      }
+    </div>
 
-              ))}
-
-            </Grid>
-            <Grid item xs={12}>
-              {sender2.map((person, index) => (
-                <ListItemText align="left" secondary={person.message}></ListItemText>
-              ))}
-            </Grid>
+            
           </Grid>
         </ListItem>
       </List>
@@ -101,7 +104,6 @@ console.log(sender2, sender1)
         </Grid>
       </Grid>
     </Grid>
-
 
   );
 };

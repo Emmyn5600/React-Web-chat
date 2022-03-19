@@ -78,7 +78,7 @@ const [open, setOpen] = React.useState(false);
 
 const handleChange = (event) => {
   setSender(event.target.value);
-  sessionStorage.setItem("sender", sender);
+  localStorage.setItem("sender", sender);
 };
 
 const handleClose = () => {
@@ -93,11 +93,11 @@ const handleOpen = () => {
     <>
      <Grid item xs={3} className={classes.borderRight500}>
                 <List>
-                    <ListItem button key={sessionStorage.getItem('sender')}>
+                    <ListItem button key={localStorage.getItem('sender')}>
                         <ListItemIcon>
-                        <Avatar alt={sessionStorage.getItem('sender')} src="https://material-ui.com/static/images/avatar/1.jpg" />
+                        <Avatar alt={localStorage.getItem('sender')} src="https://material-ui.com/static/images/avatar/1.jpg" />
                         </ListItemIcon>
-                        <ListItemText primary={sessionStorage.getItem('sender')}></ListItemText>
+                        <ListItemText primary={localStorage.getItem('sender')}></ListItemText>
                     </ListItem>
                 </List>
                 <Divider />
