@@ -10,6 +10,7 @@
 
 - React
 - Redux
+- Hooks
 - Material UI
 
 # Live demo
