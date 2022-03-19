@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -14,7 +13,6 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -44,101 +42,106 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const User = () => {
-const classes = useStyles();
- const [user,setUser] =useState('')
- const [sender,setSender] =useState('')
+  const classes = useStyles();
+  const [user, setUser] = useState('');
+  const [sender, setSender] = useState('');
 
+  const handleTextFieldChange = (e) => {
+    e.preventDefault();
+    if (e.target.value) {
+      setUser(e.target.value);
+    }
+  };
+  const saveUser = () => {
+    if (user === '') {
+      alert('Please enter  user name of sender');
+    } else if (!JSON.parse(localStorage.getItem('users')) && user) {
+      const arr = [];
+      arr.push(user);
+      localStorage.setItem('users', JSON.stringify(arr));
+      setUser('');
+    } else if (JSON.parse(localStorage.getItem('users')).length === 1) {
+      const arr = JSON.parse(localStorage.getItem('users'));
+      arr.push(user);
+      localStorage.setItem('users', JSON.stringify(arr));
+      setUser('');
+    } else {
+      alert('Maximum number of user exceeded');
+    }
+  };
+  const [open, setOpen] = React.useState(false);
 
-const handleTextFieldChange = (e) => {
-  e.preventDefault();
-  setUser(e.target.value)
-  
-}
-const saveUser = () => {
+  const handleChange = (event) => {
+    setSender(event.target.value);
+    localStorage.setItem('sender', event.target.value);
+    setSender('');
+  };
 
-  if (!JSON.parse(localStorage.getItem('users'))) {
-    const arr = [];
-    arr.push(user)
-    localStorage.setItem("users", JSON.stringify(arr));
-    setUser('')
-  }
-  else if(JSON.parse(localStorage.getItem('users')).length==1) {
-    const arr = JSON.parse(localStorage.getItem('users'));
-    arr.push(user)
-    localStorage.setItem("users", JSON.stringify(arr));
-    setUsers('')
-  }
-  else{
-    alert("Maximum number of user exceeded")
-  }
-}
-const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-const handleChange = (event) => {
-  setSender(event.target.value);
-  localStorage.setItem("sender", sender);
-};
-
-const handleClose = () => {
-  setOpen(false);
-};
-
-const handleOpen = () => {
-  setOpen(true);
-};
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   return (
     <>
-     <Grid item xs={3} className={classes.borderRight500}>
-                <List>
-                    <ListItem button key={localStorage.getItem('sender')}>
-                        <ListItemIcon>
-                        <Avatar alt={localStorage.getItem('sender')} src="https://material-ui.com/static/images/avatar/1.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary={localStorage.getItem('sender')}></ListItemText>
-                    </ListItem>
-                </List>
-                <Divider />
-                <Grid item xs={12} style={{padding: '10px', display:'flex'}}>
-                    <TextField 
-                    value={user} onChange={handleTextFieldChange}
-                    id="outlined-basic-email" label="Enter New User" variant="outlined" fullWidth />
-                    <button onClick={saveUser}>ADD</button>
-              
-                </Grid>   
+      <Grid item xs={3} className={classes.borderRight500}>
+        <List>
+          <ListItem button key={localStorage.getItem('sender')}>
+            <ListItemIcon>
+              <Avatar alt={localStorage.getItem('sender')} src="https://material-ui.com/static/images/avatar/1.jpg" />
+            </ListItemIcon>
+            <ListItemText primary={localStorage.getItem('sender')} />
+          </ListItem>
+        </List>
+        <Divider />
+        <Grid item xs={12} style={{ padding: '10px', display: 'flex' }}>
+          <TextField
+            value={user}
+            onChange={handleTextFieldChange}
+            id="outlined-basic-email"
+            label="Enter New User"
+            variant="outlined"
+            required
+          />
+          <button type="button" onClick={saveUser}>ADD</button>
 
-                {JSON.parse(localStorage.getItem('users'))!=null?
-                <div>
-                  
-      <Button className={classes.button} onClick={handleOpen}>
-        Select Sender
-      </Button>
-      <FormControl className={classes.formControl}>
-        <InputLabel id="demo-controlled-open-select-label">Select User</InputLabel>
-        <Select
-          labelId="demo-controlled-open-select-label"
-          id="demo-controlled-open-select"
-          open={open}
-          onClose={handleClose}
-          onOpen={handleOpen}
-          value={sender}
-          onChange={handleChange}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          
-          <MenuItem value={JSON.parse(localStorage.getItem('users'))[1]}>{JSON.parse(localStorage.getItem('users'))[0]}</MenuItem>
-          <MenuItem value={JSON.parse(localStorage.getItem('users'))[0]}>{JSON.parse(localStorage.getItem('users'))[1]}</MenuItem>
-        </Select>
-      </FormControl>
-    </div>: null}
-            </Grid>
+        </Grid>
+
+        {JSON.parse(localStorage.getItem('users')) != null
+          ? (
+            <div>
+
+              <Button className={classes.button} onClick={handleOpen}>
+                Select Sender
+              </Button>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-controlled-open-select-label">Select User</InputLabel>
+                <Select
+                  labelId="demo-controlled-open-select-label"
+                  id="demo-controlled-open-select"
+                  open={open}
+                  onClose={handleClose}
+                  onOpen={handleOpen}
+                  value={sender}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+
+                  <MenuItem value={JSON.parse(localStorage.getItem('users'))[0]}>{JSON.parse(localStorage.getItem('users'))[0]}</MenuItem>
+                  <MenuItem value={JSON.parse(localStorage.getItem('users'))[1]}>{JSON.parse(localStorage.getItem('users'))[1]}</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          ) : null}
+      </Grid>
 
     </>
-
 
   );
 };

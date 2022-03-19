@@ -7,7 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Fab from '@material-ui/core/Fab';
 import SendIcon from '@material-ui/icons/Send';
-import './ChatSpace.css'
+import './ChatSpace.css';
 
 const useStyles = makeStyles({
   table: {
@@ -27,52 +27,57 @@ const useStyles = makeStyles({
     height: '70vh',
     overflowY: 'auto',
   },
-})
+});
 const ChatSpace = () => {
-  const [message, setMessage] = useState("")
-  const sender1 = []
-  const sender2 = []
-  const allSenders = []
+  const [message, setMessage] = useState('');
+  const sender1 = [];
+  const sender2 = [];
+  const allSenders = [];
   const handleMessageChange = (e) => {
     e.preventDefault();
-    setMessage(e.target.value)
 
-  }
+    setMessage(e.target.value);
+  };
   const sendMessage = () => {
-    let messageobj = {}
-    if (!JSON.parse(localStorage.getItem('datas'))) {
+    const messageobj = {};
+    if (message === '') {
+      alert('Enter Message please');
+    } else if (localStorage.getItem('sender') == null) {
+      alert('Select Sender  please');
+    } else if (!JSON.parse(localStorage.getItem('datas'))) {
       const arr = [];
-      messageobj.sender = localStorage.getItem('sender')
-      messageobj.message = message
-      arr.push(messageobj)
-      localStorage.setItem("datas", JSON.stringify(arr));
-      setMessage('')
-    }
-    else {
-      messageobj.sender = localStorage.getItem('sender')
-      messageobj.message = message
+      messageobj.sender = localStorage.getItem('sender');
+      messageobj.message = message;
+      arr.push(messageobj);
+      localStorage.setItem('datas', JSON.stringify(arr));
+      setMessage('');
+    } else {
+      messageobj.sender = localStorage.getItem('sender');
+      messageobj.message = message;
       const arr = JSON.parse(localStorage.getItem('datas'));
-      arr.push(messageobj)
-      localStorage.setItem("datas", JSON.stringify(arr));
-      setMessage('')
+      arr.push(messageobj);
+      localStorage.setItem('datas', JSON.stringify(arr));
+      setMessage('');
     }
-
-  }
+  };
   if (JSON.parse(localStorage.getItem('datas')) != null) {
     JSON.parse(localStorage.getItem('datas')).map((person) => {
       if (JSON.parse(localStorage.getItem('datas')) != null) {
-        allSenders.push(person)
+        allSenders.push(person);
         if (JSON.parse(localStorage.getItem('users')) != null) {
-          if (person.sender == JSON.parse(localStorage.getItem('users'))[0]) {
-            sender1.push(person)
-          }
-          else if (person.sender == JSON.parse(localStorage.getItem('users'))[1]) {
-            sender2.push(person)
+          if (person.sender === JSON.parse(localStorage.getItem('users'))[0]) {
+            sender1.push(person);
+          } else if (person.sender === JSON.parse(localStorage.getItem('users'))[1]) {
+            sender2.push(person);
           }
         }
       }
-    })
-
+      return null;
+    });
+  }
+  let user1 = [];
+  if (JSON.parse(localStorage.getItem('users'))) {
+    user1 = { ...JSON.parse(localStorage.getItem('users')) };
   }
   const classes = useStyles();
   return (
@@ -81,21 +86,44 @@ const ChatSpace = () => {
         <ListItem key="2">
           <Grid container>
             <div className="chat-background">
-              {allSenders.map((person, index) => (
-                <div style={{ width: '60%' }}>
-                  {person.sender == JSON.parse(localStorage.getItem('users'))[0] ?
-                    <div>
-                      <div style={{ width: '300px', margin: "40px", borderRadius: "0px 50px 50px 50px", marginLeft: '300px', padding: '20px', backgroundColor: 'gray' }}>
-                        <div style={{ width: "fit-content", height: "auto", borderRadius: "50%", backgroundColor: 'cyan', padding: '20px' }}>{person.sender}</div><p style={{ color: 'white' }}>{person.message}</p></div></div> :
-                    <div>
-                      <div style={{ width: '300px', margin: "40px", borderRadius: "50px 50px 50px 0px", padding: '20px', backgroundColor: 'brown' }}>
-                        <div style={{ width: "fit-content", height: "auto", borderRadius: "50%", backgroundColor: 'pink', padding: '20px' }}>{person.sender}</div><p style={{ color: 'white' }}>{person.message}</p></div></div>}
+              {allSenders.map((person) => (
+                <div style={{ width: '60%' }} key={0}>
+                  {person.sender === user1[0]
+                    ? (
+                      <div>
+                        <div style={{
+                          width: '300px', margin: '40px', borderRadius: '0px 50px 50px 50px', marginLeft: '300px', padding: '20px', backgroundColor: 'gray',
+                        }}
+                        >
+                          <div style={{
+                            width: 'fit-content', height: 'auto', borderRadius: '50%', backgroundColor: 'cyan', padding: '20px',
+                          }}
+                          >
+                            {person.sender}
+                          </div>
+                          <p style={{ color: 'white' }}>{person.message}</p>
+                        </div>
+                      </div>
+                    )
+                    : (
+                      <div>
+                        <div style={{
+                          width: '300px', margin: '40px', borderRadius: '50px 50px 50px 0px', padding: '20px', backgroundColor: 'brown',
+                        }}
+                        >
+                          <div style={{
+                            width: 'fit-content', height: 'auto', borderRadius: '50%', backgroundColor: 'pink', padding: '20px',
+                          }}
+                          >
+                            {person.sender}
+                          </div>
+                          <p style={{ color: 'white' }}>{person.message}</p>
+                        </div>
+                      </div>
+                    )}
                 </div>
-              )
-              )
-              }
+              ))}
             </div>
-
 
           </Grid>
         </ListItem>
@@ -103,7 +131,7 @@ const ChatSpace = () => {
       <Divider />
       <Grid container style={{ padding: '20px' }}>
         <Grid item xs={11}>
-          <TextField id="outlined-basic-email" label="Type Something" value={message} onChange={handleMessageChange} fullWidth />
+          <TextField id="outlined-basic-email" label="Type Something" value={message} required onChange={handleMessageChange} fullWidth />
         </Grid>
         <Grid xs={1} align="right">
           <Fab color="primary" aria-label="add" onClick={sendMessage}><SendIcon /></Fab>

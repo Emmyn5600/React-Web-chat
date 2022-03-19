@@ -24,15 +24,14 @@ const useStyles = makeStyles({
 });
 
 const Sidebar = () => {
-const classes = useStyles();
-  
+  const classes = useStyles();
+
   return (
     <div>
-         <Grid container component={Paper} className={classes.chatSection}>
-            <User/>  
-         </Grid>
-       
-       
+      <Grid container component={Paper} className={classes.chatSection}>
+        <User />
+      </Grid>
+
     </div>
   );
 };
