@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -7,6 +8,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Fab from '@material-ui/core/Fab';
 import SendIcon from '@material-ui/icons/Send';
+import PropTypes from 'prop-types';
+import { v4 as uuidv4 } from 'uuid';
+import { ADD_MESSAGE } from '../../actions/actionTypes';
 import './ChatSpace.css';
 
 const useStyles = makeStyles({
@@ -28,18 +32,28 @@ const useStyles = makeStyles({
     overflowY: 'auto',
   },
 });
-const ChatSpace = () => {
+const ChatSpace = (props) => {
+  const { addMessage } = props;
   const [message, setMessage] = useState('');
+  const [isValid, setIsValid] = useState(false);
   const sender1 = [];
   const sender2 = [];
   const allSenders = [];
+  const messages = useSelector((state) => state.messages);
+
+  useEffect(() => {
+  }, [messages]);
   const handleMessageChange = (e) => {
     e.preventDefault();
-
     setMessage(e.target.value);
+    if (message.length >= 0) {
+      setIsValid(true);
+    }
   };
   const sendMessage = () => {
-    const messageobj = {};
+    const messageobj = {
+      id: uuidv4(),
+    };
     if (message === '') {
       alert('Enter Message please');
     } else if (localStorage.getItem('sender') == null) {
@@ -48,6 +62,7 @@ const ChatSpace = () => {
       const arr = [];
       messageobj.sender = localStorage.getItem('sender');
       messageobj.message = message;
+      addMessage(messageobj);
       arr.push(messageobj);
       localStorage.setItem('datas', JSON.stringify(arr));
       setMessage('');
@@ -56,6 +71,7 @@ const ChatSpace = () => {
       messageobj.message = message;
       const arr = JSON.parse(localStorage.getItem('datas'));
       arr.push(messageobj);
+      addMessage(messageobj);
       localStorage.setItem('datas', JSON.stringify(arr));
       setMessage('');
     }
@@ -87,7 +103,7 @@ const ChatSpace = () => {
           <Grid container>
             <div className="chat-background">
               {allSenders.map((person) => (
-                <div style={{ width: '60%' }} key={0}>
+                <div style={{ width: '60%' }} key={person.id}>
                   {person.sender === user1[0]
                     ? (
                       <div>
@@ -134,7 +150,7 @@ const ChatSpace = () => {
           <TextField id="outlined-basic-email" label="Type Something" value={message} required onChange={handleMessageChange} fullWidth />
         </Grid>
         <Grid xs={1} align="right">
-          <Fab color="primary" aria-label="add" onClick={sendMessage}><SendIcon /></Fab>
+          <Fab color="primary" aria-label="send" disabled={!isValid} onClick={sendMessage}><SendIcon /></Fab>
         </Grid>
       </Grid>
     </Grid>
@@ -142,4 +158,15 @@ const ChatSpace = () => {
   );
 };
 
-export default ChatSpace;
+const mapDispatchToProps = {
+  addMessage: (message) => ({
+    type: ADD_MESSAGE,
+    payload: message,
+  }),
+};
+
+ChatSpace.propTypes = {
+  addMessage: PropTypes.func.isRequired,
+};
+
+export default connect(null, mapDispatchToProps)(ChatSpace);

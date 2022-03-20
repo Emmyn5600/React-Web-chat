@@ -13,6 +13,7 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
+import Fab from '@material-ui/core/Fab';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -46,11 +47,15 @@ const User = () => {
   const classes = useStyles();
   const [user, setUser] = useState('');
   const [sender, setSender] = useState('');
+  const [isValid, setIsValid] = useState(false);
 
   const handleTextFieldChange = (e) => {
     e.preventDefault();
     if (e.target.value) {
       setUser(e.target.value);
+      if (user.length >= 0) {
+        setIsValid(true);
+      }
     }
   };
   const saveUser = () => {
@@ -107,7 +112,7 @@ const User = () => {
             variant="outlined"
             required
           />
-          <button type="button" onClick={saveUser}>ADD</button>
+          <Fab color="primary" aria-label="add" disabled={!isValid} onClick={saveUser}>ADD</Fab>
 
         </Grid>
 
