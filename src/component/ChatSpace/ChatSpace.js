@@ -149,8 +149,8 @@ const ChatSpace = (props) => {
         <Grid item xs={11}>
           <TextField id="outlined-basic-email" label="Type Something" value={message} required onChange={handleMessageChange} fullWidth />
         </Grid>
-        <Grid xs={1} align="right">
-          <Fab color="primary" aria-label="send" disabled={!isValid} onClick={sendMessage}><SendIcon /></Fab>
+        <Grid align="right">
+          <Fab color="primary" data-testid="send-message" aria-label="send message" disabled={!isValid} onClick={sendMessage}><SendIcon /></Fab>
         </Grid>
       </Grid>
     </Grid>

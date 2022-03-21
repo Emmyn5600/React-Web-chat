@@ -112,7 +112,7 @@ const User = () => {
             variant="outlined"
             required
           />
-          <Fab color="primary" aria-label="add" disabled={!isValid} onClick={saveUser}>ADD</Fab>
+          <Fab color="primary" aria-label="add" data-testid="addUser" disabled={!isValid} onClick={saveUser}>ADD</Fab>
 
         </Grid>
 
